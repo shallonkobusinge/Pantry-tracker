@@ -24,6 +24,7 @@ import Card from "./components/Card";
 import Header from "./components/Header";
 import { Search } from "@mui/icons-material";
 import { deleteItem, postItem } from "@/utils/functions";
+import { ItemT } from "./types/common";
 
 const style = {
   position: "absolute",
@@ -46,14 +47,14 @@ export default function Home() {
   const [itemName, setItemName] = useState("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [pantryList, setPantryList] = useState<string[]>([]);
+  const [pantryList, setPantryList] = useState<ItemT[]>([]);
 
   const updatePantry = async () => {
     const snapshot = query(collection(firestore, "pantry"));
     const docs = await getDocs(snapshot);
-    const pantryList: string[] = [];
+    const pantryList: ItemT[] = [];
     docs.forEach((doc) => {
-      pantryList.push(doc.id);
+      pantryList.push({ name: doc.id, quantity: doc.data().quantity });
     });
     setPantryList(pantryList);
     // console.log(pantryList);
@@ -76,7 +77,7 @@ export default function Home() {
   const handleCapture = async (photo: string) => {
     try {
       const itemName = await classifyImageWithVision(photo);
-      if (itemName != "Unknown Item") {
+      if (itemName != "Unknown Item" || itemName != "undefined") {
         console.log(`Item name: ${itemName}`);
         addItem(itemName);
       }
@@ -86,7 +87,7 @@ export default function Home() {
   };
 
   return (
-    <div className=" flex flex-col p-4 bg-pageBg p-12">
+    <div className=" flex flex-col p-4 p-12">
       <h1 className="text-justify mx-48 font-bold text-button text-xl">PT</h1>
       <div className="flex items-center justify-center justify-evenly mb-8">
         <h1 className="text-center uppercase">Pantry Items</h1>
@@ -180,8 +181,18 @@ export default function Home() {
       </div>
 
       <Header />
+      {pantryList.length <= 0 && (
+        <div className="flex opacity-[0.9] w-2/4  justify-start mx-auto pl-8">
+          <h1 className="text-sm text-button">Stock is empty, try adding a new product...</h1>
+          
+        </div>
+      )}
       {pantryList.map((item, index) => (
-        <Card name={item} id={index} removeItemFunc={() => removeItem(item)} />
+        <Card
+          item={item}
+          id={index}
+          removeItemFunc={() => removeItem(item.name)}
+        />
       ))}
     </div>
 
