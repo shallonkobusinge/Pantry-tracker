@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Inter } from "next/font/google";
+import AddIcon from "@mui/icons-material/Add";
 import { firestore } from "@/firebase";
 import {
   collection,
@@ -11,11 +12,19 @@ import {
   setDoc,
 } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Button, Modal, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Modal,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Camera } from "react-camera-pro";
 import { classifyImageWithVision } from "@/utils/vision";
 import Card from "./components/Card";
 import Header from "./components/Header";
+import { Search } from "@mui/icons-material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -85,13 +94,41 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col p-4 bg-pageBg">
-      <h1>Pantry Items</h1>
+    <div className=" flex flex-col p-4 bg-pageBg p-12">
+      <h1 className="text-justify mx-48 font-bold text-button text-xl">PT</h1>
+      <div className="flex items-center justify-center justify-evenly mb-8">
+        <h1 className="text-center uppercase">Pantry Items</h1>
+        <div className="flex gap-4">
+          <div className=" h-8">
+            <TextField
+              id="outlined-basic"
+              label="Search"
+              placeholder="Search by name"
+              variant="outlined"
+              value={itemName}
+              size="small"
+            />
+          </div>
+
+          <Button
+            variant="contained"
+            style={{
+              backgroundColor: "#F59C1F",
+              gap: 4,
+            }}
+          >
+            <AddIcon />
+            Add Product
+          </Button>
+        </div>
+      </div>
+
       <Header />
       {pantryList.map((item, index) => (
         <Card name={item} id={index} />
       ))}
     </div>
+
     // <div className=" ">
     //   <div className="items-center flex justify-center pt-10">
     //     <Button variant="contained" onClick={handleOpen}>
