@@ -1,21 +1,13 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-// const firebaseConfig = {
-//  apiKey: "YOUR_API_KEY",
-//  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-//  projectId: "YOUR_PROJECT_ID",
-//  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-//  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-//  appId: "YOUR_APP_ID"
-//  };
 const firebaseConfig = {
-  apiKey: "AIzaSyDn8cRRzqMmuqysXJ1p-M-UpW9DScipaQU",
-  authDomain: "pantry-tracker-c5785.firebaseapp.com",
-  projectId: "pantry-tracker-c5785",
-  storageBucket: "pantry-tracker-c5785.appspot.com",
-  messagingSenderId: "1008147104402",
-  appId: "1:1008147104402:web:fd10ae4db237d8f588dc4b",
-  measurementId: "G-4VLJSHSQLB",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDERID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APPID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENTID,
 };
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);

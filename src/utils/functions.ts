@@ -16,12 +16,9 @@ export const getPantryItems = async () => {
   const docs = await getDocs(snapshot);
   const pantryList: string[] = [];
   docs.forEach((doc) => {
-    // console.log(doc.id, doc.data());
     pantryList.push(doc.id);
   });
-
   return pantryList;
-  // console.log(pantryList);
 };
 
 export const postItem = async (item: string) => {
@@ -59,7 +56,6 @@ export const deleteItem = async (item: string) => {
 export const putItem = async (item: string, newQuantity: number) => {
   const docRef = doc(collection(firestore, "pantry"), item);
   const docSnap = await getDoc(docRef);
-  console.log(`New Quantity: ${newQuantity}`);
   if (docSnap.exists()) {
     const { createdAt } = docSnap.data();
     await updateDoc(docRef, {

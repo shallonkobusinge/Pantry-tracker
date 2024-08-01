@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
 import { CardPropsT } from "../types/common";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import { deleteItem, putItem } from "@/utils/functions";

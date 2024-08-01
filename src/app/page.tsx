@@ -1,20 +1,12 @@
 "use client";
 import AddIcon from "@mui/icons-material/Add";
 import { firestore } from "@/firebase";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-} from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
   Modal,
-  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -22,8 +14,7 @@ import { Camera } from "react-camera-pro";
 import { classifyImageWithVision } from "@/utils/vision";
 import Card from "./components/Card";
 import Header from "./components/Header";
-import { Search } from "@mui/icons-material";
-import { deleteItem, postItem, putItem } from "@/utils/functions";
+import { postItem } from "@/utils/functions";
 import { ItemT } from "./types/common";
 
 const style = {
@@ -54,10 +45,14 @@ export default function Home() {
     const docs = await getDocs(snapshot);
     const pantryList: ItemT[] = [];
     docs.forEach((doc) => {
-      pantryList.push({ name: doc.id, quantity: doc.data().quantity, createdAt: doc.data().createdAt?.toDate(), updatedAt: doc.data().updatedAt });
+      pantryList.push({
+        name: doc.id,
+        quantity: doc.data().quantity,
+        createdAt: doc.data().createdAt?.toDate(),
+        updatedAt: doc.data().updatedAt,
+      });
     });
     setPantryList(pantryList);
-    // console.log(pantryList);
   };
   useEffect(() => {
     updatePantry();
@@ -74,7 +69,6 @@ export default function Home() {
     try {
       const itemName = await classifyImageWithVision(photo);
       if (itemName != "Unknown Item" && itemName != "undefined") {
-        console.log(`Item name: ${itemName}`);
         addItem(itemName);
         handleClose();
       }
@@ -128,16 +122,6 @@ export default function Home() {
               >
                 Capture Item
               </Typography>
-              {/* <Stack width="100%" height="700px" direction={"row"} spacing={2}> */}
-              {/* <TextField
-              id="outlined-basic"
-              label="Item"
-              variant="outlined"
-              fullWidth
-              value={itemName}
-              onChange={(e) => setItemName(e.target.value)}
-            /> */}
-              {/* <div className="h-12 w-12"> */}
               <Camera
                 ref={camera}
                 errorMessages={{
@@ -148,7 +132,6 @@ export default function Home() {
                 }}
                 aspectRatio={4 / 3}
               />
-              {/* </div> */}
 
               <Button
                 variant="outlined"
@@ -156,10 +139,7 @@ export default function Home() {
                   setImage(
                     camera.current != null && camera.current.takePhoto()
                   );
-                  // console.log(image);
                   handleCapture(image);
-                  // addItem(itemName);
-                  // setItemName("");
                 }}
                 style={{
                   marginTop: "12px",
@@ -189,94 +169,5 @@ export default function Home() {
         ))
       )}
     </div>
-
-    // <div className=" ">
-    //   <div className="items-center flex justify-center pt-10">
-    //     <Button variant="contained" onClick={handleOpen}>
-    //       Add
-    //     </Button>
-    //   </div>
-
-    //   <Modal
-    //     open={open}
-    //     onClose={handleClose}
-    //     aria-labelledby="modal-modal-title"
-    //   >
-    //     <Box sx={style}>
-    //       <Typography
-    //         id="modal-modal-title"
-    //         variant="h6"
-    //         component="h2"
-    //         color={"black"}
-    //       >
-    //         Add Item
-    //       </Typography>
-    //       <Stack width="100%" height="700px" direction={"row"} spacing={2}>
-    //         {/* <TextField
-    //           id="outlined-basic"
-    //           label="Item"
-    //           variant="outlined"
-    //           fullWidth
-    //           value={itemName}
-    //           onChange={(e) => setItemName(e.target.value)}
-    //         /> */}
-    //         <Camera
-    //           ref={camera}
-    //           errorMessages={{
-    //             noCameraAccessible: undefined,
-    //             permissionDenied: undefined,
-    //             switchCamera: undefined,
-    //             canvas: undefined,
-    //           }}
-    //         />
-    //         <Button
-    //           variant="outlined"
-    //           onClick={() => {
-    //             setImage(camera.current != null && camera.current.takePhoto());
-    //             // console.log(image);
-    //             handleCapture(image);
-    //             // addItem(itemName);
-    //             // setItemName("");
-    //             handleClose();
-    //           }}
-    //         >
-    //           Add
-    //         </Button>
-    //       </Stack>
-    //     </Box>
-    //   </Modal>
-    //   <Typography variant={"h2"} color={"#333"} textAlign={"center"}>
-    //     Pantry Items
-    //   </Typography>
-    //   <Stack width="800px" height="300px" spacing={2} overflow={"auto"}>
-    //     {pantryList.map((item) => (
-    //       <Box
-    //         key={item}
-    //         width="100%"
-    //         minHeight="150px"
-    //         display={"flex"}
-    //         justifyContent={"space-between"}
-    //         padding={2}
-    //         alignItems={"center"}
-    //         bgcolor={"#f0f0f0"}
-    //         paddingX={5}
-    //       >
-    //         <Typography variant={"h3"} color={"#333"} textAlign={"center"}>
-    //           {item}
-    //         </Typography>
-    //         <Button variant="contained" onClick={() => removeItem(item)}>
-    //           Remove
-    //         </Button>
-    //       </Box>
-
-    //       // <div
-    //       //   className="flex flex-row justify-center items-center mx-auto pt-10 "
-    //       //   key={item}
-    //       // >
-    //       //   <h1>{item}</h1>
-    //       // </div>
-    //     ))}
-    //   </Stack>
-    // </div>
   );
 }

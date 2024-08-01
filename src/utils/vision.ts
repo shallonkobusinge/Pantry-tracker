@@ -27,9 +27,6 @@ export const classifyImageWithVision = async (imageBase64: string) => {
     const labels = response.data.responses[0].labelAnnotations;
 
     if (labels && labels.length > 0) {
-      // for(let i = 0; i < labels.length; i++) {
-      //     console.log(labels[i].description)
-      // }
       return labels[0].description;
     }
     return "Unknown Item";
