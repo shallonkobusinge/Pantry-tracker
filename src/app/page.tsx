@@ -1,6 +1,4 @@
 "use client";
-import Image from "next/image";
-import { Inter } from "next/font/google";
 import AddIcon from "@mui/icons-material/Add";
 import { firestore } from "@/firebase";
 import {
@@ -25,8 +23,7 @@ import { classifyImageWithVision } from "@/utils/vision";
 import Card from "./components/Card";
 import Header from "./components/Header";
 import { Search } from "@mui/icons-material";
-
-const inter = Inter({ subsets: ["latin"] });
+import { deleteItem, postItem } from "@/utils/functions";
 
 const style = {
   position: "absolute",
@@ -56,7 +53,6 @@ export default function Home() {
     const docs = await getDocs(snapshot);
     const pantryList: string[] = [];
     docs.forEach((doc) => {
-      // console.log(doc.id, doc.data());
       pantryList.push(doc.id);
     });
     setPantryList(pantryList);
@@ -67,17 +63,13 @@ export default function Home() {
   }, []);
 
   const addItem = async (item: string) => {
-    if (item) {
-      const docRef = doc(collection(firestore, "pantry"), item);
-      await setDoc(docRef, {});
-      updatePantry();
-    }
+    postItem(item);
+    updatePantry();
+
     // await firestore.collection("pantry").doc(item).set({})
   };
   const removeItem = async (item: string) => {
-    // await setDoc(doc(collection(firestore, 'pantry'), item), {})
-    const docRef = doc(collection(firestore, "pantry"), item);
-    await deleteDoc(docRef);
+    deleteItem(item);
     updatePantry();
   };
 
@@ -116,16 +108,80 @@ export default function Home() {
               backgroundColor: "#F59C1F",
               gap: 4,
             }}
+            onClick={handleOpen}
           >
             <AddIcon />
             Add Product
           </Button>
+
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            sx={{ border: "none", borderRadius: "10px", outline: "none" }}
+            disableAutoFocus={true}
+          >
+            <Box sx={style}>
+              <Typography
+                id="modal-modal-title"
+                variant="h6"
+                component="h2"
+                color={"black"}
+              >
+                Capture Item
+              </Typography>
+              {/* <Stack width="100%" height="700px" direction={"row"} spacing={2}> */}
+              {/* <TextField
+              id="outlined-basic"
+              label="Item"
+              variant="outlined"
+              fullWidth
+              value={itemName}
+              onChange={(e) => setItemName(e.target.value)}
+            /> */}
+              {/* <div className="h-12 w-12"> */}
+              <Camera
+                ref={camera}
+                errorMessages={{
+                  noCameraAccessible: undefined,
+                  permissionDenied: undefined,
+                  switchCamera: undefined,
+                  canvas: undefined,
+                }}
+                aspectRatio={4 / 3}
+              />
+              {/* </div> */}
+
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setImage(
+                    camera.current != null && camera.current.takePhoto()
+                  );
+                  // console.log(image);
+                  handleCapture(image);
+                  // addItem(itemName);
+                  // setItemName("");
+                  handleClose();
+                }}
+                style={{
+                  marginTop: "12px",
+                  borderColor: "#F59C1F",
+                  color: "#000000",
+                  width: "10rem",
+                }}
+              >
+                Add
+              </Button>
+              {/* </Stack> */}
+            </Box>
+          </Modal>
         </div>
       </div>
 
       <Header />
       {pantryList.map((item, index) => (
-        <Card name={item} id={index} />
+        <Card name={item} id={index} removeItemFunc={() => removeItem(item)} />
       ))}
     </div>
 

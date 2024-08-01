@@ -2,7 +2,7 @@ import React from "react";
 import { CardPropsT } from "../types/common";
 import { Button } from "@mui/material";
 
-export default function Card({ id, name, quantity }: CardPropsT) {
+export default function Card({ id, name, quantity, removeItemFunc}: CardPropsT) {
   return (
     <div className="flex bg-white w-2/4 rounded-md justify-center gap-3 justify-around items-center mx-auto h-16 mb-3">
       <h1>{`${id + 1}`}</h1>
@@ -23,6 +23,7 @@ export default function Card({ id, name, quantity }: CardPropsT) {
           style={{
             backgroundColor: "#F59C1F",
           }}
+          onClick={()=>removeItemFunc(name)}
         >
           Remove
         </Button>
