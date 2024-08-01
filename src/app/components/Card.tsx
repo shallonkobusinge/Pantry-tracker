@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { CardPropsT } from "../types/common";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import { deleteItem, putItem } from "@/utils/functions";
@@ -31,14 +31,17 @@ export default function Card({ id, item, updatePantry }: CardPropsT) {
 
   const updateItem = async (item: string, quantity: number) => {
     putItem(item, quantity);
+    handleClose();
     updatePantry;
   };
-
+  console.log(`TIME: ${item.createdAt}`);
   return (
-    <div className="flex bg-white w-2/4 rounded-md justify-center gap-3 justify-around items-center mx-auto h-16 mb-3">
+    <div className="flex bg-white w-8/12 rounded-md justify-center gap-3 justify-around items-center mx-auto h-16 mb-3">
       <h1>{`${id + 1}`}</h1>
       <h1 className="w-1/3">{item.name}</h1>
       <h1>{item.quantity}</h1>
+
+      <h1> {item.createdAt.toLocaleString()}</h1>
       <div className="flex gap-4">
         <Button
           variant="outlined"
@@ -94,7 +97,7 @@ export default function Card({ id, item, updatePantry }: CardPropsT) {
                 width: "10rem",
               }}
               onClick={() => {
-                updateItem(item.name, newQuantity), handleClose();
+                updateItem(item.name, newQuantity);
               }}
             >
               Update

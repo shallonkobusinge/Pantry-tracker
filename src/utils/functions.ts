@@ -29,9 +29,10 @@ export const postItem = async (item: string) => {
     const docRef = doc(collection(firestore, "pantry"), item);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      const { quantity } = docSnap.data();
+      const { quantity, createdAt } = docSnap.data();
       await setDoc(docRef, {
         quantity: quantity + 1,
+        createdAt: createdAt,
         updatedAt: serverTimestamp(),
       });
     } else {

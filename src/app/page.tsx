@@ -54,7 +54,7 @@ export default function Home() {
     const docs = await getDocs(snapshot);
     const pantryList: ItemT[] = [];
     docs.forEach((doc) => {
-      pantryList.push({ name: doc.id, quantity: doc.data().quantity });
+      pantryList.push({ name: doc.id, quantity: doc.data().quantity, createdAt: doc.data().createdAt.toDate(), updatedAt: doc.data().updatedAt });
     });
     setPantryList(pantryList);
     // console.log(pantryList);
@@ -73,7 +73,7 @@ export default function Home() {
   const handleCapture = async (photo: string) => {
     try {
       const itemName = await classifyImageWithVision(photo);
-      if (itemName != "Unknown Item" || itemName != "undefined") {
+      if (itemName != "Unknown Item" && itemName != "undefined") {
         console.log(`Item name: ${itemName}`);
         addItem(itemName);
         handleClose();
