@@ -50,7 +50,8 @@ export const deleteItem = async (item: string) => {
     if (quantity === 1 || quantity == "NaN") {
       await deleteDoc(docRef);
     } else {
-      await setDoc(docRef, { quantity: quantity - 1 });
+      const { quantity, createdAt } = docSnap.data();
+      await setDoc(docRef, { quantity: quantity - 1, createdAt: createdAt });
     }
   }
 };
@@ -60,8 +61,10 @@ export const putItem = async (item: string, newQuantity: number) => {
   const docSnap = await getDoc(docRef);
   console.log(`New Quantity: ${newQuantity}`);
   if (docSnap.exists()) {
+    const { createdAt } = docSnap.data();
     await updateDoc(docRef, {
       quantity: newQuantity,
+      createdAt: createdAt,
       updatedAt: serverTimestamp(),
     });
   }

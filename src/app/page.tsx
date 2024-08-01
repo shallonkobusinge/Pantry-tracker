@@ -54,7 +54,7 @@ export default function Home() {
     const docs = await getDocs(snapshot);
     const pantryList: ItemT[] = [];
     docs.forEach((doc) => {
-      pantryList.push({ name: doc.id, quantity: doc.data().quantity, createdAt: doc.data().createdAt.toDate(), updatedAt: doc.data().updatedAt });
+      pantryList.push({ name: doc.id, quantity: doc.data().quantity, createdAt: doc.data().createdAt?.toDate(), updatedAt: doc.data().updatedAt });
     });
     setPantryList(pantryList);
     // console.log(pantryList);

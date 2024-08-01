@@ -34,14 +34,13 @@ export default function Card({ id, item, updatePantry }: CardPropsT) {
     handleClose();
     updatePantry;
   };
-  console.log(`TIME: ${item.createdAt}`);
   return (
     <div className="flex bg-white w-8/12 rounded-md justify-center gap-3 justify-around items-center mx-auto h-16 mb-3">
       <h1>{`${id + 1}`}</h1>
       <h1 className="w-1/3">{item.name}</h1>
       <h1>{item.quantity}</h1>
 
-      <h1> {item.createdAt.toLocaleString()}</h1>
+      <h1> {item.createdAt?.toLocaleString()}</h1>
       <div className="flex gap-4">
         <Button
           variant="outlined"
