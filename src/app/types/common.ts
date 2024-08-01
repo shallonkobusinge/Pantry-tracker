@@ -8,8 +8,9 @@ export type ItemT = {
 type removeItem = (
   item: string
 ) => MouseEventHandler<HTMLAnchorElement> | Promise<void> | undefined;
+
 export type CardPropsT = {
   id: number;
   item: ItemT;
-  removeItemFunc: removeItem;
+  updatePantry: Promise<void>;
 };

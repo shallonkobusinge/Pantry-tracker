@@ -1,4 +1,3 @@
-import { ItemT } from "@/app/types/common";
 import { firestore } from "@/firebase";
 import {
   collection,
@@ -7,7 +6,9 @@ import {
   getDoc,
   getDocs,
   query,
+  serverTimestamp,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 export const getPantryItems = async () => {
@@ -29,9 +30,12 @@ export const postItem = async (item: string) => {
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const { quantity } = docSnap.data();
-      await setDoc(docRef, { quantity: quantity + 1 });
+      await setDoc(docRef, {
+        quantity: quantity + 1,
+        updatedAt: serverTimestamp(),
+      });
     } else {
-      await setDoc(docRef, { quantity: 1 });
+      await setDoc(docRef, { quantity: 1, createdAt: serverTimestamp() });
     }
   }
   // await firestore.collection("pantry").doc(item).set({})
@@ -42,10 +46,22 @@ export const deleteItem = async (item: string) => {
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     const { quantity } = docSnap.data();
-    if (quantity === 1 || quantity == 'NaN') {
+    if (quantity === 1 || quantity == "NaN") {
       await deleteDoc(docRef);
     } else {
       await setDoc(docRef, { quantity: quantity - 1 });
     }
+  }
+};
+
+export const putItem = async (item: string, newQuantity: number) => {
+  const docRef = doc(collection(firestore, "pantry"), item);
+  const docSnap = await getDoc(docRef);
+  console.log(`New Quantity: ${newQuantity}`);
+  if (docSnap.exists()) {
+    await updateDoc(docRef, {
+      quantity: newQuantity,
+      updatedAt: serverTimestamp(),
+    });
   }
 };

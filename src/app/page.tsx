@@ -23,7 +23,7 @@ import { classifyImageWithVision } from "@/utils/vision";
 import Card from "./components/Card";
 import Header from "./components/Header";
 import { Search } from "@mui/icons-material";
-import { deleteItem, postItem } from "@/utils/functions";
+import { deleteItem, postItem, putItem } from "@/utils/functions";
 import { ItemT } from "./types/common";
 
 const style = {
@@ -69,10 +69,6 @@ export default function Home() {
 
     // await firestore.collection("pantry").doc(item).set({})
   };
-  const removeItem = async (item: string) => {
-    deleteItem(item);
-    updatePantry();
-  };
 
   const handleCapture = async (photo: string) => {
     try {
@@ -80,6 +76,7 @@ export default function Home() {
       if (itemName != "Unknown Item" || itemName != "undefined") {
         console.log(`Item name: ${itemName}`);
         addItem(itemName);
+        handleClose();
       }
     } catch (error) {
       console.error(`Error classifying image: ${error}`);
@@ -163,7 +160,6 @@ export default function Home() {
                   handleCapture(image);
                   // addItem(itemName);
                   // setItemName("");
-                  handleClose();
                 }}
                 style={{
                   marginTop: "12px",
@@ -181,19 +177,17 @@ export default function Home() {
       </div>
 
       <Header />
-      {pantryList.length <= 0 && (
+      {pantryList.length <= 0 ? (
         <div className="flex opacity-[0.9] w-2/4  justify-start mx-auto pl-8">
-          <h1 className="text-sm text-button">Stock is empty, try adding a new product...</h1>
-          
+          <h1 className="text-sm text-button">
+            Stock is empty, try adding a new product...
+          </h1>
         </div>
+      ) : (
+        pantryList.map((item, index) => (
+          <Card item={item} id={index} updatePantry={updatePantry()} />
+        ))
       )}
-      {pantryList.map((item, index) => (
-        <Card
-          item={item}
-          id={index}
-          removeItemFunc={() => removeItem(item.name)}
-        />
-      ))}
     </div>
 
     // <div className=" ">
