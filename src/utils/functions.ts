@@ -10,7 +10,6 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
-  where,
 } from "firebase/firestore";
 
 export const getPantryItems = async () => {

@@ -1,14 +1,12 @@
 "use client";
 import AddIcon from "@mui/icons-material/Add";
-import { firestore } from "@/firebase";
-import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import { Camera } from "react-camera-pro";
 import { classifyImageWithVision } from "@/utils/vision";
 import Card from "./components/Card";
 import Header from "./components/Header";
-import { getPantryItems, postItem } from "@/utils/functions";
+import { postItem } from "@/utils/functions";
 import { ItemT } from "./types/common";
 import { useGetPantryItems } from "@/hooks/items";
 
@@ -31,7 +29,6 @@ export default function Home() {
   const camera = useRef<any>(null);
   const [image, setImage] = useState<string>("");
   const [open, setOpen] = useState(false);
-  const [itemName, setItemName] = useState<string>("");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [searchName, setSearchName] = useState<string>();
@@ -65,7 +62,6 @@ export default function Home() {
       item.name.toLowerCase().includes(searchItem.toLowerCase())
     );
     setFilteredPantryList(results);
-    // getPantryItems();
   };
 
   return (
