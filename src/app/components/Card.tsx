@@ -18,9 +18,14 @@ const style = {
   height: 400,
 };
 
-export default function Card({ id, item }: CardPropsT) {
+export default function Card({
+  id,
+  item,
+  updatePantry
+}: CardPropsT) {
   const removeItem = async (item: string) => {
-    deleteItem(item);
+    await deleteItem(item);
+    updatePantry()
   };
 
   const [open, setOpen] = useState(false);
@@ -29,8 +34,9 @@ export default function Card({ id, item }: CardPropsT) {
   const [newQuantity, setNewQuantity] = useState<number>(item.quantity);
 
   const updateItem = async (item: string, quantity: number) => {
-    putItem(item, quantity);
+    await putItem(item, quantity);
     handleClose();
+    updatePantry();
   };
   return (
     <div className="flex bg-white w-8/12 rounded-md justify-center gap-3 justify-around items-center mx-auto h-16 mb-3">

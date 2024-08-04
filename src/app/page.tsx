@@ -6,9 +6,8 @@ import { Camera } from "react-camera-pro";
 import { classifyImageWithVision } from "@/utils/vision";
 import Card from "./components/Card";
 import Header from "./components/Header";
-import { postItem } from "@/utils/functions";
+import { getPantryItems, postItem } from "@/utils/functions";
 import { ItemT } from "./types/common";
-import { useGetPantryItems } from "@/hooks/items";
 
 const style = {
   position: "absolute",
@@ -25,23 +24,31 @@ const style = {
 };
 
 export default function Home() {
-  const { pantryItems } = useGetPantryItems();
   const camera = useRef<any>(null);
   const [image, setImage] = useState<string>("");
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [searchName, setSearchName] = useState<string>();
+  const [searchName, setSearchName] = useState<string>("");
   const [filteredPantryList, setFilteredPantryList] = useState<ItemT[]>([]);
 
-  useEffect(() => {
-    if (Object.keys(pantryItems).length > 0) {
-      setFilteredPantryList(pantryItems);
+  const updatePantryList = async () => {
+   const pantryList = await getPantryItems();
+    if (Object.keys(pantryList).length > 0) {
+      const results = searchName != "" ? pantryList.filter((item) =>
+        item.name.toLowerCase().includes(searchName.toLowerCase())
+      ): pantryList;
+      setFilteredPantryList(results);
     }
-  }, [pantryItems]);
+    console.log(`Search name ${searchName} Filtered list Length: ${filteredPantryList.length}`)
+  }
+  useEffect(() => {
+   updatePantryList()
+  }, [  searchName]);
 
   const addItem = async (item: string) => {
-    postItem(item);
+    await postItem(item);
+    updatePantryList()
   };
 
   const handleCapture = async (photo: string) => {
@@ -58,10 +65,7 @@ export default function Home() {
 
   const handleSearchChange = async (searchItem: string) => {
     setSearchName(searchItem);
-    const results = pantryItems.filter((item) =>
-      item.name.toLowerCase().includes(searchItem.toLowerCase())
-    );
-    setFilteredPantryList(results);
+    
   };
 
   return (
@@ -153,7 +157,7 @@ export default function Home() {
           </h1>
         </div>
       ) : (
-        filteredPantryList.map((item, index) => <Card item={item} id={index} />)
+        filteredPantryList.map((item, index) => <Card item={item} id={index} updatePantry={updatePantryList} />)
       )}
     </div>
   );

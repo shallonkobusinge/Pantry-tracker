@@ -29,5 +29,7 @@ type removeItem = (
 export type CardPropsT = {
   id: number;
   item: ItemT;
-  // updatePantry: Promise<void>;
+  updatePantry: () => Promise<void>;
+  // handleSearchChange: (searchItem: string | undefined) => Promise<void>;
+  // searchItem: string | undefined;
 };
